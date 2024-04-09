@@ -47,10 +47,10 @@ export const createUser = async (req: Request, res: Response) => {
     //req.body.salary;
     const user = new EMPLOYEE();
     user.NAME = name;
-    
+    user.SALARY = salary;
     await user.save();
     console.log(user);
-    res.send('crear usuario');
+    res.send('usuario creado');
     }catch(error){
         if (error instanceof Error){
             return res.status(500).json({message: error.message})
@@ -106,13 +106,16 @@ export const findUserById = async (req: Request, res: Response) => {
 export const updateUser = async (req: Request, res: Response) => {
 
     const {id} = req.params;
+    const requestBody = {// Transformación del cuerpo de la solicitud para que coincidan em mayusculas como en la definicion
+        NAME: req.body.name,
+        SALARY: req.body.salary
+    };
     //Comprobación de existencia del usuario
-    const user =  await EMPLOYEE.findOneBy({ID: parseInt(req.params.id)});
+    const user =  await EMPLOYEE.findOneBy({ID: parseInt(id)});
     if(!user) return res.status(404).json ({message: 'User does not exist'});
     //Actualizacion del usuario
-    await EMPLOYEE.update({ID: parseInt(id)}, req.body); //parsea el id que le llega como string en el req.params y actualiza lo que haya en el body de la request.
+    await EMPLOYEE.update({ID: parseInt(id)}, requestBody); //parsea el id que le llega como string en el req.params y actualiza lo que haya en el body de la request.
     return res.sendStatus(204);
-
 }
 
 /*export const deleteUser = async (req: Request, res: Response) => {
